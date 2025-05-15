@@ -1,0 +1,28 @@
+---
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        doc:
+          - a32nx
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@just
+      - uses: typst-community/setup-typst@v4
+      - run: just build ${{ matrix.doc }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.doc }}
+          path: |
+            ${{ matrix.doc }}.pdf
